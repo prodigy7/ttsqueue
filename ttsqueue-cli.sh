@@ -14,6 +14,15 @@ else
 	# Load configuration
 	source $TTSROOT/ttsqueue.conf
 
+	# Check: Given user
+	TTSUSERID=$(cat /etc/passwd | grep $TTSUSER | cut -d ":" -f4)
+	if [ "$?" -ne 0 -o "$UID" -ne 0 ] ; then
+		echo -e ""
+		echo -e "ERROR: Please run this script only with user root or $TTSUSER"
+		echo -e ""
+		exit 12;
+	fi
+
 	# Check: Variable defined
 	if [ ! $TTSQUEUE ]; then
 		echo -e ""
@@ -33,7 +42,7 @@ else
 	# Check: User can write
 	if [ ! -w $TTSQUEUE ]; then
 		echo -e ""
-		echo -e "ERROR: Queue path $TTSQUEUE is not writeable by current user"
+		echo -e "ERROR: Queue path $TTSQUEUE is not writeable by user $TTSUSER"
 		echo -e ""
 		exit 13;
 	fi
