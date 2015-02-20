@@ -85,6 +85,15 @@ else
 			exit 18;
 		fi
 	fi
+
+	if [ -f $TTSROOT/ttsqueue.pid ]; then
+		if [ ! -w $TTSROOT/ttsqueue.pid ]; then
+			echo -e ""
+			echo -e "ERROR: File $TTSROOT/ttsqueue.pid is not writeable by user $TTSUSER"
+			echo -e ""
+			exit 19;
+		fi
+	fi
 fi
 
 
@@ -115,6 +124,14 @@ function monitoringQueue {
 
 			# Remove stop file
 			rm $FILEPATH >/dev/null 2>&1
+
+			# Remove pid
+			rm $TTSROOT/ttsqueue.pid >/dev/null 2>&1
+
+			# Kill this and all child processes
+			kill -- $(ps -o pgid=$$ | grep -o '[0-9]*') >/dev/null 2>&1
+			killall inotifywait >/dev/null 2>&1
+
 			exit 0
 		else
 			# Some output for log file
@@ -144,7 +161,10 @@ function monitoringQueue {
 				sleep $TTSDELAY
 			fi
 		fi
-	done > $TTSROOT/ttsqueue.log 2>&1
+	done > $TTSROOT/ttsqueue.log 2>&1 &
+
+	# Write pid to file
+	echo $! > $TTSROOT/ttsqueue.pid
 }
 
 # Handling with parameters
@@ -170,9 +190,6 @@ case $1 in
 
 		nohup sudo -u $TTSUSER $0 daemon >/dev/null 2>&1 &
 		if [ "$?" -eq 0 ] ; then
-
-			# Write pid to file
-			echo $! > $TTSROOT/ttsqueue.pid
 
 			# Print status
 			echo -e "Daemon started"
@@ -210,12 +227,6 @@ case $1 in
 			if [ "$?" == "0" ] ; then
 				echo -e "Daemon stopped"
 				echo "$TTS" > $TTSQUEUE/stop
-
-				# Remove pid
-				rm $TTSROOT/ttsqueue.pid >/dev/null 2>&1
-
-				# Kill this and all child processes
-				kill -- -$(ps -o pgid=$$ | grep -o '[0-9]*')
 
 				exit 0
 			else
