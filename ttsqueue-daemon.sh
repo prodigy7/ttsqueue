@@ -144,7 +144,7 @@ function monitoringQueue {
 				sleep $TTSDELAY
 			fi
 		fi
-	done
+	done > $TTSROOT/ttsqueue.log 2>&1
 }
 
 # Handling with parameters
@@ -168,7 +168,7 @@ case $1 in
 		# Cleanup queue
 		rm $TTSQUEUE/* >/dev/null 2>&1
 
-		nohup sudo -u $TTSUSER $0 daemon > $TTSROOT/ttsqueue.log 2>&1 &
+		nohup sudo -u $TTSUSER $0 daemon >/dev/null 2>&1 &
 		if [ "$?" -eq 0 ] ; then
 
 			# Write pid to file
