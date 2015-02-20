@@ -1,0 +1,17 @@
+# Path, where tts items can be found
+TTSQUEUE="/opt/fhem/plugins/ttsqueue/queue"
+
+# Intro file which is always played before text is spoken. Leave empty if not needed.
+TTSINTRO=""
+
+# Delay between spoken tests in seconds
+TTSDELAY=5
+
+# Define url for text so speach conversation. Set with %SPEAKTEXT% where encoded text string should inserted
+TTSURL="http://translate.google.com/translate_tts?tl=de&q=%SPEAKTEXT%"
+
+# Set options for vlc playback
+TTSPLAYPARAM="--quiet --aout alsa --alsa-audio-device btspeaker --no-interact --play-and-exit"
+
+# Define as which user the daemon is running
+TTSUSER="fhem"
