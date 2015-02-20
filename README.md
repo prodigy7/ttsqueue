@@ -1,8 +1,14 @@
 # TTSQueue
-Simple script collection for playing tts queued under linux
+Simple set of bash scripts for queuing texts that should be spoken via Google TTS. Idea was to implement text-to-speech for a home automation system. 
+To prevent multiple announcements at same the, this script implement a simple queue so announcements can be player ordered.
+
+## Requirements
+* inotify-tools Package
+* bash
+* A linux system
 
 ## Installation
-Extract files to a directory. Next rename ttsqueue.conf.dist to ttsqueue.conf and modify it for your requirements.
+Extract files to a directory. Next rename *ttsqueue.conf.dist* to *ttsqueue.conf* and modify it for your requirements.
 
 ## Usage
 ### Daemon
