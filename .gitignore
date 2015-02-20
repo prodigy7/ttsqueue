@@ -1,0 +1,5 @@
+# Ignore custom config
+ttsqueue.conf
+
+# Ignore queue files
+queue/*
