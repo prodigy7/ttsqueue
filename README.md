@@ -9,6 +9,11 @@ To prevent multiple announcements at same the, this script implement a simple qu
 
 ## Installation
 Extract files to a directory. Next rename *ttsqueue.conf.dist* to *ttsqueue.conf* and modify it for your requirements.
+Make sure that the user which is used for running the daemon has write permissions on the directory. You can do that for example with
+
+     chown -R fhem /opt/fhem/plugins/ttsqueue/
+
+fhem is the user set, /opt/fhem/plugins/ttsqueue/ the directory where you've stored the scripts.
 
 ## Usage
 ### Daemon
