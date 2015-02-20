@@ -16,7 +16,8 @@ else
 
 	# Check: Given user
 	TTSUSERID=$(cat /etc/passwd | grep $TTSUSER | cut -d ":" -f4)
-	if [ "$?" -ne 0 -o "$UID" -ne 0 ] ; then
+
+	if ( [ "$?" -ne 0 ] && [ "$UID" -ne 0 ] ) ; then
 		echo -e ""
 		echo -e "ERROR: Please run this script only with user root or $TTSUSER"
 		echo -e ""
