@@ -176,7 +176,7 @@ case $1 in
 		# Check is already running
 		if [ -f $TTSROOT/ttsqueue.pid ] ; then
 			PID=$(cat $TTSROOT/ttsqueue.pid | sed "s/\n//g")
-			ps -ef | grep $PID >/dev/null
+			ps -ef | grep $PID | grep -v grep >/dev/null
 			if [ "$?" -eq 0 ] ; then
 				echo "Daemon is already running"
 				exit 2;
