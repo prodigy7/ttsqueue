@@ -5,3 +5,4 @@ ttsqueue.pid
 
 # Ignore queue files
 queue/*
+cache/*

@@ -1,12 +1,28 @@
 #!/bin/bash
 
-# Check -> needed package installed?
+# Check -> needed packages installed?
 which inotifywait >/dev/null 2>&1;
 if [ "$?" -eq 1 ]; then
 	echo -e ""
 	echo -e "ERROR: Needed command inotifywait not found. Please install package inotify-tools."
 	echo -e ""
 	exit 1;
+fi
+
+which md5sum >/dev/null 2>&1;
+if [ "$?" -eq 1 ]; then
+	echo -e ""
+	echo -e "ERROR: Needed command md5sum not found. Please install package coreutils."
+	echo -e ""
+	exit 4;
+fi
+
+which cvlc >/dev/null 2>&1;
+if [ "$?" -eq 1 ]; then
+	echo -e ""
+	echo -e "ERROR: Needed command cvlc not found. Please install package vlx-nox."
+	echo -e ""
+	exit 4;
 fi
 
 # Define ttsqueue root
@@ -138,17 +154,27 @@ function monitoringQueue {
 			date
 			cat $DIRECTORY/$EVENTFILE;
 
-			# Encode text string
-			SPEAKTEXT=$(cat $DIRECTORY/$EVENTFILE | od -An -tx1 | tr ' ' % | xargs printf "%s")
+			# Generate MD5 Checksum
+			MD5SUM=$(md5sum $DIRECTORY/$EVENTFILE | cut -d " " -f1);
 
-			# Build TTS Request
-			TTSREQUEST=$(echo $TTSURL | sed "s/%SPEAKTEXT%/$SPEAKTEXT/g")
+			# If cache file does not exist, create
+			if [ ! -f $TTSROOT/cache/$MD5SUM.mp3 ]; then
+
+				# Encode text string
+				SPEAKTEXT=$(cat $DIRECTORY/$EVENTFILE | od -An -tx1 | tr ' ' % | xargs printf "%s")
+
+				# Build TTS Request
+				TTSREQUEST=$(echo $TTSURL | sed "s/%SPEAKTEXT%/$SPEAKTEXT/g")
+
+				# Fetch file and store in cache
+				wget -q -U Mozilla "$TTSREQUEST" -O $TTSROOT/cache/$MD5SUM.mp3
+			fi
 
 			# Play
 			if [ -z "$TTSINTRO" ]; then
-				cvlc $TTSPLAYPARAM "$TTSREQUEST"
+				cvlc $TTSPLAYPARAM "$TTSROOT/cache/$MD5SUM.mp3"
 			else
-				cvlc $TTSPLAYPARAM "$TTSINTRO" "$TTSREQUEST"
+				cvlc $TTSPLAYPARAM "$TTSINTRO" "$TTSROOT/cache/$MD5SUM.mp3"
 			fi
 
 			echo -e ""
