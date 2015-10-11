@@ -20,7 +20,15 @@ fi
 which cvlc >/dev/null 2>&1;
 if [ "$?" -eq 1 ]; then
 	echo -e ""
-	echo -e "ERROR: Needed command cvlc not found. Please install package vlx-nox."
+	echo -e "ERROR: Needed command cvlc not found. Please install package vlc-nox."
+	echo -e ""
+	exit 4;
+fi
+
+which curl >/dev/null 2>&1;
+if [ "$?" -eq 1 ]; then
+	echo -e ""
+	echo -e "ERROR: Needed command curl not found. Please install package curl."
 	echo -e ""
 	exit 4;
 fi
@@ -167,7 +175,7 @@ function monitoringQueue {
 				TTSREQUEST=$(echo $TTSURL | sed "s/%SPEAKTEXT%/$SPEAKTEXT/g")
 
 				# Fetch file and store in cache
-				wget -q -U Mozilla "$TTSREQUEST" -O $TTSROOT/cache/$MD5SUM.mp3
+				curl $TTSREQUEST -H 'Referer: http://translate.google.com/' -H 'User-Agent: stagefright/1.2 (Linux;Android 5.0)' > $TTSROOT/cache/$MD5SUM.mp3
 			fi
 
 			# Play
